@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import MailIcon from "@mui/icons-material/Mail";
 import PersonIcon from "@mui/icons-material/Person";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
-import PasswordIcon from "@mui/icons-material/Password";
+// import PasswordIcon from "@mui/icons-material/Password";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -13,10 +13,26 @@ import { useHistory } from "react-router-dom";
 import { API_URL } from "../../globalconstant.js";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { useState } from "react";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Tooltip } from "@mui/material"
+import { IconButton } from "@mui/material";
+
+
 
 export function Signup() {
   const [open, setOpen] = React.useState(false);
   const [Msg, setMsg] = React.useState("");
+
+  const [text, setText] = useState("Show");
+  const [visible, setVisible] = useState("password");
+  const icon =
+    visible === "password" ? <VisibilityIcon /> : <VisibilityOffIcon />;
+  const visibility = () => {
+    setVisible((visible) => (visible === "password" ? "text" : "password"));
+    setText((text) => (text === "Show" ? "Hide" : "Show"));
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -188,11 +204,25 @@ export function Signup() {
             error={errors.phoneno && touched.phoneno}
             helperText={errors.phoneno && touched.phoneno && errors.phoneno}
           />
+
+
           <TextField
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <PasswordIcon />
+            //     </InputAdornment>
+            //   ),
+            // }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PasswordIcon />
+
+                  <Tooltip title={text}>
+                    <IconButton onClick={() => visibility()}>
+                      {icon}
+                    </IconButton>
+                  </Tooltip>
                 </InputAdornment>
               ),
             }}
@@ -200,6 +230,7 @@ export function Signup() {
             name="password"
             required
             label="Password"
+            type={visible}
             sx={{ margin: "4px" }}
             variant="outlined"
             onChange={handleChange}
